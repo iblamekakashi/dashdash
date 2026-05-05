@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Mosaic Puzzle – a beautiful image puzzle game with dynamic grouping mechanics.">
+  <meta name="theme-color" content="#6c63ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mosaic">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#0d0d1a">
+  <title>Mosaic Puzzle</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+<main id="app">
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Onboarding                         -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-onboarding" class="screen">
+    <div class="hero-block">
+      <div class="logo-gem">◈</div>
+      <h1 class="logo-title">MOSAIC</h1>
+      <p class="logo-sub">GEOMETRIC PUZZLE</p>
+    </div>
+    <div class="card ob-card">
+      <p class="field-label">Choose your username</p>
+      <input id="ob-input" class="text-input" type="text" placeholder="Player_1" maxlength="15" autocomplete="off" spellcheck="false">
+      <p id="ob-error" class="field-error hidden">Must be 3–15 characters</p>
+      <button id="ob-submit" class="btn btn-primary btn-xl">START PLAYING</button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Home                               -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-home" class="screen screen-home">
+    <div class="home-header">
+      <button id="btn-collection" class="btn btn-ghost btn-icon" aria-label="Collection">⬛</button>
+      <div class="hero-block hero-compact">
+        <h1 class="logo-title">MOSAIC</h1>
+        <p class="logo-sub">PUZZLE</p>
+      </div>
+      <div class="home-header-right">
+        <span id="home-coins" class="hud-coins">🪙 0</span>
+        <button id="btn-home-profile" class="btn btn-ghost btn-icon" aria-label="Profile">👤</button>
+      </div>
+    </div>
+
+    <!-- Main content group: shifted slightly lower as one unified composition -->
+    <div class="home-content">
+      <!-- Primary actions: PLAY then CREATE stacked -->
+      <div class="home-main-actions">
+        <button id="btn-play" class="btn btn-primary btn-mega">▶ PLAY</button>
+        <button id="btn-create-home" class="btn btn-primary btn-mega">✨ CREATE</button>
+      </div>
+
+      <!-- 2x2 game mode grid -->
+      <div class="menu-grid">
+        <button id="btn-daily-home" class="menu-card">
+          <span class="menu-icon">📅</span>
+          <span class="menu-label">Daily</span>
+          <span id="daily-badge" class="menu-badge">✔</span>
+        </button>
+        <button id="btn-master-home" class="menu-card card-purple">
+          <span class="menu-icon">🏆</span>
+          <span class="menu-label">Master</span>
+          <span class="menu-badge">20 LVL</span>
+        </button>
+        <button id="btn-explore-home" class="menu-card">
+          <span class="menu-icon">🌍</span>
+          <span class="menu-label">Explore</span>
+          <span class="menu-badge">Community</span>
+        </button>
+        <button id="btn-leaderboard-card" class="menu-card card-cyan">
+          <span class="menu-icon">📊</span>
+          <span class="menu-label">Leaderboard</span>
+          <span class="menu-badge">Top 50</span>
+        </button>
+      </div>
+
+      <div class="home-footer">
+        <button id="btn-settings-home" class="btn btn-pill">⚙️ SETTINGS</button>
+      </div>
+    </div>
+    
+    <button id="btn-music-toggle" class="btn btn-icon btn-music floating-br" aria-label="Toggle Music">🎵</button>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Shape Select                       -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-shape-select" class="screen">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>SELECT MODE</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <p class="screen-hint">Shape applies to all 350 campaign levels</p>
+    <div class="shape-grid">
+      <button class="shape-tile" data-shape="square">
+        <span class="shape-icon">⬛</span>
+        <h3>SQUARE</h3>
+        <p id="prog-square" class="shape-prog">0 / 350</p>
+      </button>
+      <button class="shape-tile" data-shape="rectangle">
+        <span class="shape-icon">▮</span>
+        <h3>RECTANGLE</h3>
+        <p id="prog-rectangle" class="shape-prog">0 / 350</p>
+      </button>
+      <button class="shape-tile" data-shape="triangle">
+        <span class="shape-icon">▲</span>
+        <h3>TRIANGLE</h3>
+        <p id="prog-triangle" class="shape-prog">0 / 350</p>
+      </button>
+      <button class="shape-tile" data-shape="jigsaw">
+        <span class="shape-icon">🧩</span>
+        <h3>JIGSAW</h3>
+        <p id="prog-jigsaw" class="shape-prog">0 / 350</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Level Map                          -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-levels" class="screen">
+    <div class="topbar">
+      <button id="levels-back" class="btn btn-ghost btn-icon">◀</button>
+      <h2 id="levels-title">LEVELS</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div id="levels-grid" class="levels-grid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Game                               -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-game" class="screen screen-game">
+
+    <!-- Topbar: [back + coins] · [level + timer + moves] · [settings] -->
+    <div class="game-topbar">
+      <div class="game-topbar-left">
+        <button id="game-back" class="btn btn-ghost btn-icon" aria-label="Back">◀</button>
+        <span id="hud-coins" class="hud-coins">🪙 0</span>
+      </div>
+      <div class="game-topbar-center">
+        <span id="game-label" class="game-label">LEVEL 1</span>
+        <div class="game-topbar-stats">
+          <span id="game-timer" class="game-timer">0:00</span>
+          <span class="hud-sep">·</span>
+          <span id="game-moves" class="game-moves">0 moves</span>
+        </div>
+      </div>
+      <button id="game-settings-btn" class="btn btn-ghost btn-icon" aria-label="Settings">⚙️</button>
+    </div>
+
+    <!-- Puzzle canvas -->
+    <div class="game-stage">
+      <div id="puzzle-grid" class="puzzle-grid"></div>
+    </div>
+
+    <!-- Minimal controls: restart + hint -->
+    <div class="game-controls">
+      <button id="btn-reset" class="btn btn-secondary btn-sm">🔄 Restart</button>
+      <button id="btn-hint"  class="btn btn-ghost btn-sm">💡 Hint</button>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Daily Challenge                    -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-daily" class="screen">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>DAILY PUZZLE</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div class="daily-header">
+      <div class="daily-date-card">
+        <span id="daily-date-display" class="daily-date">Today</span>
+        <span id="daily-streak" class="daily-streak">🔥 0 streak</span>
+      </div>
+    </div>
+    <div id="daily-content" class="daily-content">
+      <p class="screen-hint">Today's special puzzle awaits!</p>
+      <button id="btn-daily-play" class="btn btn-primary btn-xl">▶ PLAY TODAY</button>
+    </div>
+    <div class="calendar-section">
+      <h3>Past Challenges</h3>
+      <div id="daily-calendar" class="daily-calendar"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Master Challenge                   -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-master" class="screen">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>MASTER</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div class="master-hero">
+      <div class="trophy-icon">🏆</div>
+      <p class="screen-hint" id="master-unlock-hint">Complete 50 campaign levels to unlock</p>
+    </div>
+    <div id="master-grid" class="levels-grid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Explore — SOCIAL DISABLED          -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-explore" class="screen social-disabled" aria-hidden="true">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>EXPLORE</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div class="feed-tabs">
+      <button class="feed-tab active" data-tab="all">All</button>
+      <button class="feed-tab" data-tab="following">Following</button>
+    </div>
+    <div id="community-feed" class="gallery-grid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Create Puzzle                      -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-create" class="screen screen-create">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn" aria-label="Back">◀</button>
+      <h2>CREATE</h2>
+      <div class="topbar-end"></div>
+    </div>
+
+    <!-- Step 1: Image Upload -->
+    <div class="create-step">
+      <p class="create-step-label">① Choose an Image</p>
+      <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload image">
+        <input type="file" id="image-upload" accept="image/*" hidden>
+        <div id="upload-placeholder" class="upload-placeholder">
+          <span class="upload-icon">🖼️</span>
+          <p class="upload-hint">Tap or drag an image here</p>
+          <p class="upload-sub">JPG, PNG, GIF — any size</p>
+        </div>
+        <div id="image-preview" class="create-preview hidden"></div>
+        <div id="upload-change" class="upload-change hidden">
+          <span>📷 Change image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Grid Size -->
+    <div class="create-step">
+      <p class="create-step-label">② Grid Size</p>
+      <div class="size-picker" id="size-picker">
+        <button class="size-btn active" data-size="3">3×3<span>Easy</span></button>
+        <button class="size-btn" data-size="4">4×4<span>Medium</span></button>
+        <button class="size-btn" data-size="5">5×5<span>Hard</span></button>
+        <button class="size-btn" data-size="6">6×6<span>Expert</span></button>
+        <button class="size-btn" data-size="7">7×7<span>Pro</span></button>
+        <button class="size-btn" data-size="9">9×9<span>Master</span></button>
+      </div>
+      <!-- Hidden select kept for backward-compat with _launchCustom -->
+      <select id="custom-size" hidden>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="9">9</option>
+      </select>
+    </div>
+
+    <!-- Step 3: Shape -->
+    <div class="create-step">
+      <p class="create-step-label">③ Piece Shape</p>
+      <div class="create-shape-grid" id="create-shape-grid">
+        <button class="create-shape-btn active" data-shape="square">⬛<span>Square</span></button>
+        <button class="create-shape-btn" data-shape="rectangle">▮<span>Rectangle</span></button>
+        <button class="create-shape-btn" data-shape="triangle">🔺<span>Triangle</span></button>
+        <button class="create-shape-btn" data-shape="jigsaw">🧩<span>Jigsaw</span></button>
+      </div>
+      <!-- Hidden select kept for backward-compat -->
+      <select id="custom-shape" hidden>
+        <option value="square" selected>Square</option>
+        <option value="rectangle">Rectangle</option>
+        <option value="triangle">Triangle</option>
+        <option value="jigsaw">Jigsaw</option>
+      </select>
+    </div>
+
+    <!-- CTAs -->
+    <div class="create-cta">
+      <button id="btn-create-play" class="btn btn-primary btn-xl">▶ Start Playing</button>
+      <button id="btn-create-publish" class="btn btn-ghost btn-sm">🌐 Publish to Community</button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Leaderboard                        -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-leaderboard" class="screen">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn" aria-label="Back">◀</button>
+      <h2>LEADERBOARD</h2>
+      <div class="topbar-end"></div>
+    </div>
+    
+    <div class="lb-container" id="lb-container">
+      <!-- Generated via JS -->
+    </div>
+  </section>
+
+  <!-- SOCIAL: Profile social stats — hidden until social system stable -->
+  <section id="screen-profile" class="screen">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>PROFILE</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div class="profile-hero">
+      <div class="avatar-ring">👤</div>
+      <div class="profile-name-row">
+        <h2 id="profile-username">Player</h2>
+        <button id="btn-edit-username" class="btn btn-ghost btn-xs">✏️</button>
+      </div>
+      <p id="profile-total" class="profile-total">0 puzzles solved</p>
+    </div>
+    <!-- Social stats — hidden until social is enabled -->
+    <div class="social-stats-row social-disabled" aria-hidden="true">
+      <div class="social-stat">
+        <span id="stat-followers" class="stat-num">0</span>
+        <span class="stat-label">Followers</span>
+      </div>
+      <div class="social-stat">
+        <span id="stat-following" class="stat-num">0</span>
+        <span class="stat-label">Following</span>
+      </div>
+      <div class="social-stat">
+        <span id="stat-likes" class="stat-num">0</span>
+        <span class="stat-label">Likes</span>
+      </div>
+      <div class="social-stat">
+        <span id="stat-created" class="stat-num">0</span>
+        <span class="stat-label">Created</span>
+      </div>
+    </div>
+    <div class="progress-cards">
+      <div class="prog-card"><span>⬛</span><span id="prof-square">0/350</span></div>
+      <div class="prog-card"><span>▮</span><span id="prof-rectangle">0/350</span></div>
+      <div class="prog-card"><span>▲</span><span id="prof-triangle">0/350</span></div>
+      <div class="prog-card"><span>🧩</span><span id="prof-jigsaw">0/350</span></div>
+    </div>
+    <h3 class="section-title">My Uploads</h3>
+    <div id="profile-gallery" class="gallery-grid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Public Profile — SOCIAL DISABLED   -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-public-profile" class="screen social-disabled" aria-hidden="true">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>PLAYER</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div class="profile-hero">
+      <div id="pub-avatar" class="avatar-ring pub-avatar-lg">👤</div>
+      <h2 id="pub-username">Player</h2>
+      <p id="pub-uid" class="profile-uid" style="display:none"></p>
+    </div>
+    <div class="social-stats-row">
+      <div class="social-stat">
+        <span id="pub-stat-followers" class="stat-num">0</span>
+        <span class="stat-label">Followers</span>
+      </div>
+      <div class="social-stat">
+        <span id="pub-stat-following" class="stat-num">0</span>
+        <span class="stat-label">Following</span>
+      </div>
+    </div>
+    <div class="pub-profile-actions">
+      <button id="btn-follow" class="btn btn-primary">FOLLOW</button>
+      <button id="btn-message-user" class="btn btn-secondary">💬 Message</button>
+    </div>
+    <h3 class="section-title">Puzzles</h3>
+    <div id="pub-gallery" class="gallery-grid"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Messages Inbox — SOCIAL DISABLED   -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-messages" class="screen social-disabled" aria-hidden="true">
+    <div class="topbar">
+      <button class="btn btn-ghost btn-icon back-btn">◀</button>
+      <h2>MESSAGES</h2>
+      <div class="topbar-end"></div>
+    </div>
+    <div id="messages-list" class="messages-list"></div>
+    <div id="messages-empty" class="messages-empty hidden">
+      <div class="messages-empty-icon">💬</div>
+      <p>No conversations yet.</p>
+      <p class="screen-hint">Follow players and start chatting!</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: Chat — SOCIAL DISABLED             -->
+  <!-- ══════════════════════════════════════════ -->
+  <section id="screen-chat" class="screen screen-chat social-disabled" aria-hidden="true">
+    <div class="topbar">
+      <button id="chat-back" class="btn btn-ghost btn-icon">◀</button>
+      <div class="chat-topbar-info">
+        <span id="chat-peer-avatar" class="chat-peer-avatar">👤</span>
+        <h2 id="chat-peer-name">User</h2>
+      </div>
+      <div class="topbar-end"></div>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-input-row">
+      <input id="chat-input" class="chat-input" type="text"
+        placeholder="Type a message…" maxlength="500" autocomplete="off">
+      <button id="chat-send" class="chat-send-btn">➤</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═════════════════════════════════════════════ -->
+<!-- MODALS (outside main for z-index stacking)    -->
+<!-- ═════════════════════════════════════════════ -->
+
+<!-- Victory Modal -->
+<div id="modal-victory" class="modal-overlay hidden">
+  <div class="modal-box victory-box">
+    <div class="victory-anim">🎉</div>
+    <h2 class="victory-title">SOLVED!</h2>
+    <div id="victory-stars" class="victory-stars"></div>
+    <p id="victory-unlock-hint" class="victory-unlock-hint" style="display:none"></p>
+    <p id="victory-time" class="victory-time">Time: 0:00</p>
+    <p id="victory-best" class="victory-best"></p>
+    <div id="victory-coins-row" class="victory-coins-row hidden">
+      <span class="victory-coins-icon">🪙</span>
+      <span id="victory-coins" class="victory-coins-text">+0 coins</span>
+    </div>
+    <div class="victory-actions">
+      <button id="btn-next-level" class="btn btn-primary btn-xl">⏭ Next Level</button>
+      <button id="btn-replay" class="btn btn-secondary">🔄 Replay</button>
+      <button id="btn-to-menu" class="btn btn-ghost btn-sm">🏠 Menu</button>
+    </div>
+    <!-- Auto-advance countdown bar — JS drives display and fill width -->
+    <div id="auto-advance-bar" class="auto-advance-bar" style="display:none">
+      <div id="aab-fill" class="aab-fill"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="modal-settings" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h2 class="modal-title">SETTINGS</h2>
+    <div class="toggle-row">
+      <span class="toggle-label">🔈 Sound</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-sound" checked>
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">📳 Haptic</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-haptic" checked>
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <button id="btn-close-settings" class="btn btn-secondary">Close</button>
+  </div>
+</div>
+
+<!-- Confirm Exit Modal -->
+<div id="modal-confirm-exit" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h2 class="modal-title">Leave Puzzle?</h2>
+    <p class="modal-body">Your current progress will be lost.</p>
+    <div class="modal-actions">
+      <button id="btn-confirm-exit" class="btn btn-danger">Leave</button>
+      <button id="btn-cancel-exit" class="btn btn-secondary">Stay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     Module load order (dependency chain):
+       config.js  →  db.js  →  game.js  →  social.js  →  ui.js
+     Each module only uses symbols from modules listed before it.
+     ═══════════════════════════════════════════════════════ -->
+<script src="config.js?v=8"></script>  <!-- constants · Save(deep-merge) · Audio · _patchLevels(fixed) -->
+<script src="db.js?v=5"></script>      <!-- Community · DB (users/follows/messages) -->
+<script src="game.js?v=10"></script>   <!-- Timer · G · moveCount · calculateStars · coin system -->
+<script src="social.js?v=6"></script>  <!-- buildGalleryCard(XSS-safe) · renderChat · renderMessages -->
+<script src="ui.js?v=6"></script>      <!-- Nav · bindEvents · boot(dedup) -->
+<script>
+  // Register Service Worker for PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
